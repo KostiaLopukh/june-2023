@@ -9,16 +9,16 @@
 
 
 // PATH
-const path = require('path');
+// const path = require('path');
 // const joinedPath = path.join(__dirname, 'helper', 'helper.js');
 // const resolvedPath = path.resolve('helper', 'helper.js');
 // const normalizedPath = path.normalize('/foo/bar//////baz/asdf/quux/..');
 
 // FS
-const fs = require('fs');
+// const fs = require('fs');
 
-const pathToFile = path.join(__dirname, 'data', 'text.txt');
-const pathToCreatedFile = path.join(__dirname, 'data', 'text2.txt');
+// const pathToFile = path.join(__dirname, 'data', 'text.txt');
+// const pathToCreatedFile = path.join(__dirname, 'data', 'text2.txt');
 
 // fs.readFile(pathToFile, (err, data)=>{
 //   if (err) throw new Error();
@@ -59,6 +59,44 @@ const pathToCreatedFile = path.join(__dirname, 'data', 'text2.txt');
 //     throw new Error()
 //   }})
 
-const os = require('os');
+// const os = require('os');
+//
+// console.log(os.type())
+// const Events = require('events');
+//
+// const eventEmitter = new Events();
+//
+// eventEmitter.on('click', ()=>{
+//   console.log('Click click click');
+// });
+//
+// eventEmitter.once('move', ()=>{
+//   console.log('Move move move');
+// });
+//
+// eventEmitter.emit('move');
+// eventEmitter.emit('move');
+// eventEmitter.emit('move');
+// eventEmitter.emit('move');
+// eventEmitter.emit('move');
+// eventEmitter.emit('click');
+// eventEmitter.emit('click');
+// eventEmitter.emit('click');
+// eventEmitter.emit('click');
+// eventEmitter.emit('click');
+// const fs = require('fs');
+// const path = require('path');
+//
+// const pathToRead = path.resolve('data', 'read.txt')
+// const pathToWrite = path.resolve('data', 'write.txt')
+//
+// const readStream = fs.createReadStream(pathToRead, { highWaterMark: 1000 });
+// const writeStream = fs.createWriteStream(pathToWrite);
+//
+// readStream.on('data', (chunk) => {
+//   console.log(chunk);
+//   writeStream.write(chunk);
+// });
+// ===
+// readStream.pipe(writeStream);
 
-console.log(os.type())
