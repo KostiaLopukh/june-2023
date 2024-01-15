@@ -1,9 +1,6 @@
 import * as fs from "fs/promises";
 import * as path from "path";
 
-// TODO
-// interface IUser {}
-
 const pathToFile = path.join(process.cwd(), "db.json");
 
 const read = async () => {
