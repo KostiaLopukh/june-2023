@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { read } from "../fs.service";
+import { IUser } from "../interfaces/user.interface";
 import { userService } from "../services/user.service";
 
 class UserController {
@@ -8,7 +8,7 @@ class UserController {
     try {
       const users = await userService.getAll();
 
-      return res.status(200).json({ data: users });
+      return res.json({ data: users });
     } catch (e) {
       next(e);
     }
@@ -16,15 +16,36 @@ class UserController {
 
   public async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = Number(req.params.id);
+      const id = req.params.id;
 
-      // винести в сервіс
-      const users = await read();
-      const index = users.findIndex((user) => user.id === id);
-      if (index === -1) {
-        throw new Error("user not found");
-      }
-      res.json({ data: users[index] });
+      const user = await userService.getById(id);
+
+      res.json({ data: user });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async updateById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.params.id;
+      const body = req.body as Partial<IUser>;
+
+      const user = await userService.updateById(id, body);
+
+      res.status(201).json(user);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async deleteById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.params.id;
+
+      await userService.deleteById(id);
+
+      res.sendStatus(204);
     } catch (e) {
       next(e);
     }

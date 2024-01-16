@@ -4,13 +4,31 @@ import { userRepository } from "../repositories/user.repository";
 
 class UserService {
   public async getAll(): Promise<IUser[]> {
-    const users = await userRepository.getAll();
+    return await userRepository.getAll();
+  }
 
-    if (true) {
-      throw new ApiError("Users not found", 404);
+  public async getById(id: string): Promise<IUser> {
+    const user = await userRepository.getById(id);
+    if (!user) {
+      throw new ApiError("User not found", 422);
     }
+    return user;
+  }
 
-    return users;
+  public async updateById(id: string, body: Partial<IUser>): Promise<IUser> {
+    const user = await userRepository.getById(id);
+    if (!user) {
+      throw new ApiError("User not found", 422);
+    }
+    return await userRepository.updateById(id, body);
+  }
+
+  public async deleteById(id: string): Promise<void> {
+    const user = await userRepository.getById(id);
+    if (!user) {
+      throw new ApiError("User not found", 422);
+    }
+    await userRepository.deleteById(id);
   }
 }
 
