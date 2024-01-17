@@ -1,6 +1,6 @@
 import { ApiError } from "../errors/api.error";
-import { IUser } from "../interfaces/user.interface";
 import { userRepository } from "../repositories/user.repository";
+import { IUser } from "../types/user.type";
 
 class UserService {
   public async getAll(): Promise<IUser[]> {
