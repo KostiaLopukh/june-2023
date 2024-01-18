@@ -1,10 +1,12 @@
+import { Types } from "mongoose";
+
 import { ApiError } from "../errors/api.error";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { ILogin } from "../types/auth.type";
 import { IUser } from "../types/user.type";
 import { passwordService } from "./password.service";
-import { ITokensPair, tokenService } from "./token.service";
+import { ITokenPayload, ITokensPair, tokenService } from "./token.service";
 
 class AuthService {
   public async signUp(dto: Partial<IUser>): Promise<IUser> {
@@ -21,6 +23,23 @@ class AuthService {
 
     const jwtTokens = tokenService.generateTokenPair({ userId: user._id });
     await tokenRepository.create({ ...jwtTokens, _userId: user._id });
+
+    return jwtTokens;
+  }
+
+  public async refresh(
+    jwtPayload: ITokenPayload,
+    refreshToken: string,
+  ): Promise<ITokensPair> {
+    await tokenRepository.deleteOneByParams({ refreshToken });
+
+    const jwtTokens = tokenService.generateTokenPair({
+      userId: jwtPayload.userId,
+    });
+    await tokenRepository.create({
+      ...jwtTokens,
+      _userId: new Types.ObjectId(jwtPayload.userId),
+    });
 
     return jwtTokens;
   }
