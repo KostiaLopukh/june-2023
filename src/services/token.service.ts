@@ -9,21 +9,25 @@ export interface ITokenPayload {
 
 export interface ITokensPair {
   accessToken: string;
+  accessExpiresIn: string;
   refreshToken: string;
+  refreshExpiresIn: string;
 }
 
 class TokenService {
   public generateTokenPair(payload: ITokenPayload): ITokensPair {
     const accessToken = jwt.sign(payload, configs.JWT_ACCESS_SECRET, {
-      expiresIn: "10s",
+      expiresIn: configs.JWT_ACCESS_EXPIRES_IN,
     });
     const refreshToken = jwt.sign(payload, configs.JWT_REFRESH_SECRET, {
-      expiresIn: "1m",
+      expiresIn: configs.JWT_REFRESH_EXPIRES_IN,
     });
 
     return {
       accessToken,
+      accessExpiresIn: configs.JWT_ACCESS_EXPIRES_IN,
       refreshToken,
+      refreshExpiresIn: configs.JWT_REFRESH_EXPIRES_IN,
     };
   }
 
