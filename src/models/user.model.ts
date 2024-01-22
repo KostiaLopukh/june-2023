@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-import { IUser } from "../interfaces/user.interface";
+import { IUser } from "../types/user.type";
 
 const userSchema = new Schema(
   {
@@ -23,7 +23,6 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
-      select: false,
     },
   },
   {
