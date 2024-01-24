@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 
+import { ERole } from "../enums/role.enum";
 import { IUser } from "../types/user.type";
 
 const userSchema = new Schema(
@@ -19,6 +20,11 @@ const userSchema = new Schema(
       min: 1,
       max: 55,
       required: true,
+    },
+    role: {
+      type: String,
+      enum: ERole,
+      default: ERole.USER,
     },
     password: {
       type: String,
