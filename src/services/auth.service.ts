@@ -2,14 +2,16 @@ import { Types } from "mongoose";
 
 import { EEmailAction } from "../enums/email-action.enum";
 import { ERole } from "../enums/role.enum";
+import { EActionTokenType } from "../enums/token-type.enum";
 import { ApiError } from "../errors/api.error";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
 import { ILogin } from "../types/auth.type";
+import { ITokenPayload, ITokensPair } from "../types/token.type";
 import { IUser } from "../types/user.type";
 import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
-import { ITokenPayload, ITokensPair, tokenService } from "./token.service";
+import { tokenService } from "./token.service";
 
 class AuthService {
   public async signUpAdmin(dto: Partial<IUser>): Promise<IUser> {
@@ -115,6 +117,44 @@ class AuthService {
     });
 
     return jwtTokens;
+  }
+
+  public async forgotPassword(user: IUser) {
+    const actionToken = tokenService.createActionToken(
+      { userId: user._id, role: ERole.USER },
+      EActionTokenType.FORGOT,
+    );
+
+    await Promise.all([
+      tokenRepository.createActionToken({
+        actionToken,
+        _userId: user._id,
+        tokenType: EActionTokenType.FORGOT,
+      }),
+      emailService.sendMail(user.email, EEmailAction.FORGOT_PASSWORD, {
+        actionToken,
+      }),
+    ]);
+  }
+
+  public async setForgotPassword(password: string, actionToken: string) {
+    const payload = tokenService.checkActionToken(
+      actionToken,
+      EActionTokenType.FORGOT,
+    );
+    const entity = await tokenRepository.getActionTokenByParams({
+      actionToken,
+    });
+    if (!entity) {
+      throw new ApiError("Not valid token", 400);
+    }
+    const newHashedPassword = await passwordService.hash(password);
+    await Promise.all([
+      userRepository.updateById(payload.userId, {
+        password: newHashedPassword,
+      }),
+      tokenRepository.deleteActionTokenByParams({ actionToken }),
+    ]);
   }
 }
 

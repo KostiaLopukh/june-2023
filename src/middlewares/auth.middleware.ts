@@ -16,7 +16,7 @@ class AuthMiddleware {
         }
 
         const accessToken = tokenString.split("Bearer ")[1];
-        const jwtPayload = tokenService.checkToken(
+        const jwtPayload = tokenService.checkAuthToken(
           accessToken,
           ETokenType.ACCESS,
           role,
@@ -44,7 +44,7 @@ class AuthMiddleware {
         }
 
         const refreshToken = tokenString.split("Bearer ")[1];
-        const jwtPayload = tokenService.checkToken(
+        const jwtPayload = tokenService.checkAuthToken(
           refreshToken,
           ETokenType.REFRESH,
           role,
