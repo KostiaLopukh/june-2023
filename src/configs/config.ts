@@ -11,4 +11,7 @@ export const configs = {
   JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN,
 
   SECRET_SALT: +process.env.SECRET_SALT,
+
+  SMTP_USER: process.env.SMTP_USER,
+  SMTP_PASSWORD: process.env.SMTP_PASSWORD,
 };
