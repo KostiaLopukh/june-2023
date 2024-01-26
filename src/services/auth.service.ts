@@ -63,31 +63,45 @@ class AuthService {
     }
 
     const hashedPassword = await passwordService.hash(dto.password);
-
-    // const users = await userRepository.getAll();
-    //
-    // await Promise.all(
-    //   users.map(async (user) => {
-    //     await emailService.sendMail(user.email, EEmailAction.WELCOME, {
-    //       name: user.name,
-    //     });
-    //   }),
-    // );
-
-    await emailService.sendMail(dto.email, EEmailAction.WELCOME, {
-      name: dto.name,
+    const user = await userRepository.create({
+      ...dto,
+      password: hashedPassword,
     });
 
-    return await userRepository.create({ ...dto, password: hashedPassword });
+    const actionToken = tokenService.createActionToken(
+      { userId: user._id, role: ERole.USER },
+      EActionTokenType.ACTIVATE,
+    );
+
+    await Promise.all([
+      tokenRepository.createActionToken({
+        actionToken,
+        _userId: user._id,
+        tokenType: EActionTokenType.FORGOT,
+      }),
+      emailService.sendMail(dto.email, EEmailAction.WELCOME, {
+        name: dto.name,
+        actionToken,
+      }),
+    ]);
+
+    return user;
   }
 
   public async signIn(dto: ILogin): Promise<ITokensPair> {
     const user = await userRepository.getOneByParams({ email: dto.email });
-    if (!user) throw new ApiError("Not valid email or password", 401);
+    if (!user) {
+      throw new ApiError("Not valid email or password", 401);
+    }
 
     const isMatch = await passwordService.compare(dto.password, user.password);
-    if (!isMatch) throw new ApiError("Not valid email or password", 401);
+    if (!isMatch) {
+      throw new ApiError("Not valid email or password", 401);
+    }
 
+    if (!user.isVerified) {
+      throw new ApiError("Verify your account", 403);
+    }
     const jwtTokens = tokenService.generateTokenPair(
       { userId: user._id, role: ERole.USER },
       ERole.USER,
@@ -152,6 +166,26 @@ class AuthService {
     await Promise.all([
       userRepository.updateById(payload.userId, {
         password: newHashedPassword,
+      }),
+      tokenRepository.deleteActionTokenByParams({ actionToken }),
+    ]);
+  }
+
+  public async verify(actionToken: string) {
+    const payload = tokenService.checkActionToken(
+      actionToken,
+      EActionTokenType.ACTIVATE,
+    );
+    const entity = await tokenRepository.getActionTokenByParams({
+      actionToken,
+    });
+    if (!entity) {
+      throw new ApiError("Not valid token", 400);
+    }
+
+    await Promise.all([
+      userRepository.updateById(payload.userId, {
+        isVerified: true,
       }),
       tokenRepository.deleteActionTokenByParams({ actionToken }),
     ]);

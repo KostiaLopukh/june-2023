@@ -91,6 +91,18 @@ class AuthController {
       next(e);
     }
   }
+
+  public async verify(req: Request, res: Response, next: NextFunction) {
+    try {
+      const token = req.params.token;
+
+      await authService.verify(token);
+
+      return res.json("OK");
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 export const authController = new AuthController();

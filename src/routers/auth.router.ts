@@ -49,5 +49,6 @@ router.put(
   commonMiddleware.isBodyValid(UserValidator.setForgotPassword),
   authController.setForgotPassword,
 );
+router.put("/verify/:token", authController.verify);
 
 export const authRouter = router;
