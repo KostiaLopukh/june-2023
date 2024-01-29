@@ -43,7 +43,7 @@ class UserService {
     }
     await Promise.all([
       userRepository.deleteById(jwtPayload.userId),
-      tokenRepository.deleteManyBy(jwtPayload.userId),
+      tokenRepository.deleteManyByUserId(jwtPayload.userId),
     ]);
   }
 }

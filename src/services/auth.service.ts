@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 
+import { IChangePassword } from "../controllers/auth.controller";
 import { EEmailAction } from "../enums/email-action.enum";
 import { ERole } from "../enums/role.enum";
 import { EActionTokenType } from "../enums/token-type.enum";
@@ -77,7 +78,7 @@ class AuthService {
       tokenRepository.createActionToken({
         actionToken,
         _userId: user._id,
-        tokenType: EActionTokenType.FORGOT,
+        tokenType: EActionTokenType.ACTIVATE,
       }),
       emailService.sendMail(dto.email, EEmailAction.WELCOME, {
         name: dto.name,
@@ -189,6 +190,25 @@ class AuthService {
       }),
       tokenRepository.deleteActionTokenByParams({ actionToken }),
     ]);
+  }
+
+  public async changePassword(dto: IChangePassword, jwtPayload: ITokenPayload) {
+    const user = await userRepository.getById(jwtPayload.userId);
+    if (!user) {
+      throw new ApiError("User not found", 404);
+    }
+
+    const isMatch = await passwordService.compare(
+      dto.oldPassword,
+      user.password,
+    );
+    if (!isMatch) {
+      throw new ApiError("Old password is invalid", 400);
+    }
+
+    const hashedNewPassword = await passwordService.hash(dto.newPassword);
+
+    await userRepository.updateById(user._id, { password: hashedNewPassword });
   }
 }
 

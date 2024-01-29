@@ -8,6 +8,7 @@ import { userRepository } from "./repositories/user.repository";
 import { adminRouter } from "./routers/admin.router";
 import { authRouter } from "./routers/auth.router";
 import { userRouter } from "./routers/user.router";
+import {runAllCronJobs} from "./crons";
 
 const app = express();
 
@@ -38,5 +39,6 @@ app.listen(PORT, async () => {
       email: "super_admin@gmail.com",
     });
   }
+  runAllCronJobs();
   console.log(`Server has started on PORT ${PORT}`);
 });
