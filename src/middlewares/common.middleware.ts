@@ -34,7 +34,7 @@ class CommonMiddleware {
         next(e);
       }
     };
-  }z
+  }
 }
 
 export const commonMiddleware = new CommonMiddleware();

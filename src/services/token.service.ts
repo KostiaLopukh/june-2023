@@ -2,20 +2,9 @@ import * as jwt from "jsonwebtoken";
 
 import { configs } from "../configs/config";
 import { ERole } from "../enums/role.enum";
-import { ETokenType } from "../enums/token-type.enum";
+import { EActionTokenType, ETokenType } from "../enums/token-type.enum";
 import { ApiError } from "../errors/api.error";
-
-export interface ITokenPayload {
-  userId: string;
-  role: ERole;
-}
-
-export interface ITokensPair {
-  accessToken: string;
-  accessExpiresIn: string;
-  refreshToken: string;
-  refreshExpiresIn: string;
-}
+import { ITokenPayload, ITokensPair } from "../types/token.type";
 
 class TokenService {
   public generateTokenPair(payload: ITokenPayload, role: ERole): ITokensPair {
@@ -54,7 +43,7 @@ class TokenService {
     };
   }
 
-  public checkToken(
+  public checkAuthToken(
     token: string,
     type: ETokenType,
     role: ERole,
@@ -65,6 +54,49 @@ class TokenService {
       case ERole.USER:
         return this.checkTokenUser(token, type);
     }
+  }
+
+  public checkActionToken(actionToken: string, type: EActionTokenType) {
+    try {
+      let secret: string;
+
+      switch (type) {
+        case EActionTokenType.FORGOT:
+          secret = configs.JWT_FORGOT_ACTION_SECRET;
+          break;
+        case EActionTokenType.ACTIVATE:
+          secret = configs.JWT_ACTION_ACTIVATE_SECRET;
+          break;
+        default:
+          throw new ApiError("checkActionToken error", 500);
+      }
+
+      return jwt.verify(actionToken, secret) as ITokenPayload;
+    } catch (e) {
+      throw new ApiError("Token not valid", 401);
+    }
+  }
+
+  public createActionToken(
+    payload: ITokenPayload,
+    tokenType: EActionTokenType,
+  ) {
+    let secret: string;
+
+    switch (tokenType) {
+      case EActionTokenType.FORGOT:
+        secret = configs.JWT_FORGOT_ACTION_SECRET;
+        break;
+      case EActionTokenType.ACTIVATE:
+        secret = configs.JWT_ACTION_ACTIVATE_SECRET;
+        break;
+      default:
+        throw new ApiError("createActionToken error", 500);
+    }
+
+    return jwt.sign(payload, secret, {
+      expiresIn: configs.JWT_ACTION_EXPIRES_IN,
+    });
   }
 
   private checkTokenUser(token: string, type: ETokenType): ITokenPayload {

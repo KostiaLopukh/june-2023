@@ -5,4 +5,8 @@ export const emailTemplates = {
     templateName: "welcome",
     subject: "Happy to see you in our app !!!👋",
   },
+  [EEmailAction.FORGOT_PASSWORD]: {
+    templateName: "forgot-password",
+    subject: "Restore password",
+  },
 };
