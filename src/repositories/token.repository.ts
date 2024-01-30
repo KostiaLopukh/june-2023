@@ -10,7 +10,7 @@ class TokenRepository {
   }
 
   public async getOneBy(params: Partial<IToken>): Promise<IToken> {
-    return await Token.findOne(params);
+    return await Token.findOne(params).populate("_userId");
   }
 
   public async deleteManyByUserId(userId: string): Promise<void> {

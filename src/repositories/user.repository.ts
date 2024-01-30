@@ -1,5 +1,6 @@
 import { FilterQuery } from "mongoose";
 
+import { Token } from "../models/token.model";
 import { User } from "../models/user.model";
 import { IUser } from "../types/user.type";
 
@@ -26,6 +27,34 @@ class UserRepository {
 
   public async deleteById(id: string): Promise<void> {
     await User.deleteOne({ _id: id });
+  }
+
+  public async findWithoutActivityAfter(date: Date): Promise<IUser[]> {
+    return await User.aggregate([
+      {
+        $lookup: {
+          from: Token.collection.name,
+          let: { userId: "$_id" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
+            { $match: { createdAt: { $gt: date } } },
+          ],
+          as: "tokens",
+        },
+      },
+      {
+        $match: {
+          tokens: { $size: 0 },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          email: 1,
+        },
+      },
+    ]);
   }
 }
 

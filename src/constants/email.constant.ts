@@ -9,4 +9,8 @@ export const emailTemplates = {
     templateName: "forgot-password",
     subject: "Restore password",
   },
+  [EEmailAction.OLD_VISIT]: {
+    templateName: "old-visit",
+    subject: "Welcome again",
+  },
 };
