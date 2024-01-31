@@ -2,13 +2,13 @@ import express, { NextFunction, Request, Response } from "express";
 import * as mongoose from "mongoose";
 
 import { configs } from "./configs/config";
+import { runAllCronJobs } from "./crons";
 import { ERole } from "./enums/role.enum";
 import { ApiError } from "./errors/api.error";
 import { userRepository } from "./repositories/user.repository";
 import { adminRouter } from "./routers/admin.router";
 import { authRouter } from "./routers/auth.router";
 import { userRouter } from "./routers/user.router";
-import {runAllCronJobs} from "./crons";
 
 const app = express();
 

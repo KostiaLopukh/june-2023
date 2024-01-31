@@ -17,6 +17,12 @@ class UserRepository {
     return await User.findOne(params);
   }
 
+  public async getOneByParamsWithPassword(
+    params: FilterQuery<IUser>,
+  ): Promise<IUser> {
+    return await User.findOne(params).select("+password");
+  }
+
   public async updateById(id: string, body: Partial<IUser>): Promise<IUser> {
     return await User.findByIdAndUpdate(id, body, { returnDocument: "after" });
   }

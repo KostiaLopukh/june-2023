@@ -23,8 +23,8 @@ const handler = async function () {
       }),
     );
   } catch (e) {
-    throw new ApiError(e.meesage, e.status);
+    throw new ApiError(e.message, e.status);
   }
 };
 
-export const notificationForOltVisitors = new CronJob("* * * * * *", handler);
+export const notificationForOltVisitors = new CronJob("* 0 * * * *", handler);
