@@ -1,6 +1,7 @@
 import { ApiError } from "../errors/api.error";
 import { tokenRepository } from "../repositories/token.repository";
 import { userRepository } from "../repositories/user.repository";
+import { IQuery } from "../types/pagination.type";
 import { ITokenPayload } from "../types/token.type";
 import { IUser } from "../types/user.type";
 
@@ -45,6 +46,17 @@ class UserService {
       userRepository.deleteById(jwtPayload.userId),
       tokenRepository.deleteManyByUserId(jwtPayload.userId),
     ]);
+  }
+
+  public async getMany(query: IQuery) {
+    const queryString = JSON.stringify(query);
+    const queryObject = JSON.parse(
+      queryString.replace(/\b(gte|lte|gt|lt)\b/, (match) => `$${match}`),
+    );
+
+    const usersPaginated = await userRepository.getMany(queryObject);
+
+    return usersPaginated;
   }
 }
 

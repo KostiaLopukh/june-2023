@@ -8,7 +8,7 @@ import { UserValidator } from "../validators/user.validator";
 
 const router = Router();
 
-router.get("/", userController.getAll);
+router.get("/", userController.getAllPaginated);
 
 router.get(
   "/me",
