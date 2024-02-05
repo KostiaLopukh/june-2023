@@ -5,6 +5,11 @@ import { ILogin } from "../types/auth.type";
 import { ITokenPayload } from "../types/token.type";
 import { IUser } from "../types/user.type";
 
+export interface IChangePassword {
+  oldPassword: string;
+  newPassword: string;
+}
+
 class AuthController {
   public async signUpAdmin(req: Request, res: Response, next: NextFunction) {
     try {
@@ -86,7 +91,7 @@ class AuthController {
 
       await authService.setForgotPassword(newPassword, token);
 
-      return res.json("OK");
+      return res.sendStatus(204);
     } catch (e) {
       next(e);
     }
@@ -98,7 +103,20 @@ class AuthController {
 
       await authService.verify(token);
 
-      return res.json("OK");
+      return res.sendStatus(204);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async changePassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+      const body = req.body as IChangePassword;
+
+      await authService.changePassword(body, jwtPayload);
+
+      return res.sendStatus(204);
     } catch (e) {
       next(e);
     }

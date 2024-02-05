@@ -25,6 +25,7 @@ router.post(
   commonMiddleware.isBodyValid(UserValidator.create),
   authController.signUp,
 );
+
 router.post(
   "/sign-in",
   commonMiddleware.isBodyValid(UserValidator.login),
@@ -49,6 +50,14 @@ router.put(
   commonMiddleware.isBodyValid(UserValidator.setForgotPassword),
   authController.setForgotPassword,
 );
+
 router.put("/verify/:token", authController.verify);
+
+router.post(
+  "/change-password",
+  commonMiddleware.isBodyValid(UserValidator.changePassword),
+  authMiddleware.checkAccessToken(ERole.USER),
+  authController.changePassword,
+);
 
 export const authRouter = router;

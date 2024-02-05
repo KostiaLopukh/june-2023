@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
+import { UserPresenter } from "../presenters/user.presenter";
 import { userService } from "../services/user.service";
 import { ITokenPayload } from "../types/token.type";
 import { IUser } from "../types/user.type";
@@ -33,7 +34,7 @@ class UserController {
 
       const user = await userService.getMe(jwtPayload);
 
-      res.json({ data: user });
+      res.json({ data: UserPresenter.userToResponse(user) });
     } catch (e) {
       next(e);
     }

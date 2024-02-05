@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import * as mongoose from "mongoose";
 
 import { configs } from "./configs/config";
+import { runAllCronJobs } from "./crons";
 import { ERole } from "./enums/role.enum";
 import { ApiError } from "./errors/api.error";
 import { userRepository } from "./repositories/user.repository";
@@ -38,5 +39,6 @@ app.listen(PORT, async () => {
       email: "super_admin@gmail.com",
     });
   }
+  runAllCronJobs();
   console.log(`Server has started on PORT ${PORT}`);
 });
