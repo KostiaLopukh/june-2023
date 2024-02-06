@@ -35,6 +35,10 @@ const userSchema = new Schema(
       required: true,
       select: false,
     },
+    phone: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,
