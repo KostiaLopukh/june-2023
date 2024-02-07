@@ -10,5 +10,6 @@
     "removeComments": true,
     "noUnusedLocals": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
   }
 }

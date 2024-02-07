@@ -1,4 +1,5 @@
 import { config } from "dotenv";
+
 config();
 
 export const configs = {
@@ -25,4 +26,8 @@ export const configs = {
   SMTP_PASSWORD: process.env.SMTP_PASSWORD,
 
   FRONT_URL: process.env.FRONT_URL,
+
+  TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
+  TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
+  TWILIO_SERVICE_SID: process.env.TWILIO_SERVICE_SID,
 };

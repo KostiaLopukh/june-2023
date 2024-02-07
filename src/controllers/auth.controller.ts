@@ -4,6 +4,7 @@ import { authService } from "../services/auth.service";
 import { ILogin } from "../types/auth.type";
 import { ITokenPayload } from "../types/token.type";
 import { IUser } from "../types/user.type";
+import {UserPresenter} from "../presenters/user.presenter";
 
 export interface IChangePassword {
   oldPassword: string;
@@ -38,7 +39,7 @@ class AuthController {
       const body = req.body as Partial<IUser>;
       const createdUser = await authService.signUp(body);
 
-      return res.json({ data: createdUser });
+      return res.json({ data: UserPresenter.userToResponse(createdUser) });
     } catch (e) {
       next(e);
     }
