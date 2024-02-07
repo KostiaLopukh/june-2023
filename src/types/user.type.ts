@@ -9,6 +9,7 @@ export interface IUser extends Document {
   password: string;
   phone: string;
   isVerified: boolean;
+  avatar: string;
   role: ERole;
   createdAt: Date;
 }
