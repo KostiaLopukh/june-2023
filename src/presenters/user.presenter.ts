@@ -4,6 +4,7 @@ import { IUser } from "../types/user.type";
 export class UserPresenter {
   public static userToResponse(user: IUser) {
     return {
+      _id: user._id,
       name: user.name,
       email: user.email,
       age: user.age,
