@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { UploadedFile } from "express-fileupload";
 
 import { UserPresenter } from "../presenters/user.presenter";
 import { userService } from "../services/user.service";
@@ -78,6 +79,33 @@ class UserController {
       await userService.deleteMe(jwtPayload);
 
       res.sendStatus(204);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async uploadAvatar(req: Request, res: Response, next: NextFunction) {
+    try {
+      const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+
+      await userService.uploadAvatar(
+        jwtPayload.userId,
+        req.files.avatar as UploadedFile,
+      );
+
+      res.json("OK");
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async deleteAvatar(req: Request, res: Response, next: NextFunction) {
+    try {
+      const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+
+      await userService.deleteAvatar(jwtPayload.userId);
+
+      res.json("OK");
     } catch (e) {
       next(e);
     }
