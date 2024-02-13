@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+
+<button id="click"> CLICK </button>
+<button id="sendMessage"> SEND MESSAGE </button>
+
+<button id="joinRoom"> JOIN ROOM </button>
+
+<script src="https://cdn.socket.io/4.7.4/socket.io.min.js" integrity="sha384-Gr6Lu2Ajx28mzwyVR8CFkULdCU7kMlZ9UthllibdOSo6qAiN+yXNHqtgdTvFXMT4" crossorigin="anonymous"></script>
+
+<script>
+    const socket = io('http://localhost:3001');
+
+    const clickButton = document.getElementById('click');
+    const sendMessage = document.getElementById('sendMessage');
+    const joinRoom = document.getElementById('joinRoom');
+
+    clickButton.onclick = () => {
+      socket.emit('click')
+    }
+
+    sendMessage.onclick = () => {
+      socket.emit('message:create', { data: 'Hello Okten!' })
+    }
+
+    socket.on('clock', ()=>{
+      alert('clock')
+    })
+
+    socket.on('all', (data)=>{
+      alert(data);
+    })
+
+    socket.on('allExceptMe', (data)=>{
+      alert(data);
+    })
+
+    socket.on('room:newUserJoined', (socketId)=>{
+      alert(socketId);
+    })
+
+    joinRoom.onclick = () => {
+      socket.emit('room:join', { roomId: 1 })
+    }
+</script>
+
+</body>
+</html>
